@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 set -e
 
-# 1. Virtual X display
+# 1. Docker daemon
+dockerd > /tmp/dockerd.log 2>&1 &
+while ! docker info >/dev/null 2>&1; do sleep 1; done
+echo "Docker daemon ready in container"
+
+# 2. Virtual X display
 Xvfb "$DISPLAY" -screen 0 "$SCREEN_GEOMETRY" &
 sleep 2            # give Xvfb a moment to come up
 
-# 2. Window manager + browser
+# 3. Window manager + browser
 fluxbox   &> /tmp/fluxbox.log &
-
 chromium --no-sandbox about:blank \
          &> /tmp/chromium.log &
 
-# 3. VNC server and noVNC bridge (fixed ports)
+# 4. VNC server and noVNC bridge (fixed ports)
 x11vnc -display "$DISPLAY" -rfbport 5900 -nopw -shared -forever \
        &> /tmp/x11vnc.log &
 

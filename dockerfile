@@ -36,6 +36,8 @@ RUN apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugi
 
 # ---------------------------------
 
+RUN cd /home && git clone https://github.com/fbrunodr/Inception.git
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
